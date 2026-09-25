@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mission Complete</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#111827;color:white}.container{max-width:700px;margin:auto;padding:30px 20px}
+h1{text-align:center;font-size:38px;margin-bottom:5px}.subtitle{text-align:center;color:#9ca3af;margin-bottom:25px}
+.points,.card,.wallet{border-radius:15px;padding:20px;margin:15px 0}.points,.card{background:#1f2937}.points{text-align:center}.points-number{font-size:42px;font-weight:bold}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#2563eb;color:white;font-size:16px;cursor:pointer;margin-top:12px}
+button:disabled{background:#4b5563;cursor:not-allowed}.wallet{background:#064e3b;text-align:center}.reward{color:#86efac;font-weight:bold}.small{text-align:center;color:#9ca3af;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎯 Mission Complete</h1><div class="subtitle">Complete missions. Earn points.</div>
+<div class="points"><div>Your Points</div><div class="points-number" id="points">0</div></div>
+
+<div class="card"><h2>🧠 Quick Quiz</h2><p>Answer a quick question to earn <span class="reward">100 points</span>.</p><button id="quiz" onclick="completeMission('quiz',100)">Start Quiz +100</button></div>
+<div class="card"><h2>📺 Rewarded Ad</h2><p>Watch the simulated 5-second ad and earn <span class="reward">50 points</span>.</p><button id="ad" onclick="watchAd()">Watch Ad +50</button></div>
+<div class="card"><h2>📋 Daily Survey</h2><p>Complete a demo survey and earn <span class="reward">150 points</span>.</p><button id="survey" onclick="completeMission('survey',150)">Complete Survey +150</button></div>
+<div class="card"><h2>🎮 Game Challenge</h2><p>Complete this demo challenge and earn <span class="reward">200 points</span>.</p><button id="game" onclick="completeMission('game',200)">Complete Challenge +200</button></div>
+<div class="card"><h2>👥 Invite a Friend</h2><p>Demo referral mission — earn <span class="reward">250 points</span>.</p><button id="referral" onclick="completeMission('referral',250)">Complete Referral +250</button></div>
+<div class="card"><h2>🔥 Daily Streak</h2><p>Complete 2 missions to unlock this <span class="reward">100-point</span> bonus.</p><button id="streak" onclick="completeStreak()">Unlock Streak +100</button></div>
+
+<div class="wallet"><h2>💰 Wallet</h2><p id="cash">$0.00</p><p>Demo conversion: 1,000 points = $1</p><button onclick="cashout()">Request Payout</button></div>
+<div class="small">Demo version only. No real money is paid yet.</div>
+</div>
+<script>
+let points=Number(localStorage.getItem("mc_points"))||0;
+let completed=JSON.parse(localStorage.getItem("mc_completed")||"[]");
+function save(){localStorage.setItem("mc_points",points);localStorage.setItem("mc_completed",JSON.stringify(completed))}
+function updateScreen(){document.getElementById("points").textContent=points;document.getElementById("cash").textContent="$"+(points/1000).toFixed(2);["quiz","ad","survey","game","referral","streak"].forEach(id=>{let b=document.getElementById(id);if(completed.includes(id)){b.disabled=true;b.textContent="Completed ✓"}})}
+function completeMission(id,reward){if(completed.includes(id))return;completed.push(id);points+=reward;save();updateScreen();alert("Mission complete! +"+reward+" points")}
+function watchAd(){if(completed.includes("ad"))return;let b=document.getElementById("ad");b.disabled=true;let s=5;b.textContent="Watching ad... "+s+"s";let t=setInterval(()=>{s--;if(s>0)b.textContent="Watching ad... "+s+"s";else{clearInterval(t);completed.push("ad");points+=50;save();updateScreen();alert("Ad completed! +50 points")}},1000)}
+function completeStreak(){if(completed.includes("streak"))return;if(completed.length<2){alert("Complete 2 missions first!");return}completed.push("streak");points+=100;save();updateScreen();alert("Daily streak bonus! +100 points")}
+function cashout(){if(points<1000){alert("You need at least 1,000 points to request a payout.");return}alert("Demo payout request created. Real payouts are not connected yet.")}
+updateScreen();
+</script>
+</body>
+</html>
