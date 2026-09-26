@@ -399,13 +399,9 @@ async function completeStreak(){
 
   alert("Daily streak bonus! +100 points");
 }
-function cashout(){
+async function cashout(){
 
   const status = document.getElementById("payoutStatus");
-  const savedStatus = localStorage.getItem("mc_payout_status");
-if (savedStatus) {
-  status.textContent = savedStatus;
-}
 
   if(points < 1000){
 
@@ -415,16 +411,48 @@ if (savedStatus) {
     return;
   }
 
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if(!user){
+
+    status.textContent =
+      "Please log in before requesting a payout.";
+
+    return;
+  }
+
   const amount = (points / 1000).toFixed(2);
 
+  const { error } =
+    await supabaseClient
+      .from("payout_requests")
+      .insert({
+        user_id: user.id,
+        points: points,
+        amount: amount,
+        status: "pending"
+      });
+
+  if(error){
+
+    status.textContent =
+      "Could not create payout request.";
+
+    console.log("Payout error:", error.message);
+
+    return;
+  }
+
   status.textContent =
-    "Demo payout request created for $" +
+    "Payout request created for $" +
     amount +
-    ". Real payouts are not connected yet.";
+    ". Status: Pending.";
+
   localStorage.setItem(
-  "mc_payout_status",
-  status.textContent
-);
+    "mc_payout_status",
+    status.textContent
+  );
 }
 
 updateScreen();
