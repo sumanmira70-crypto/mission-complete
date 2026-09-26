@@ -427,7 +427,7 @@ const supabaseClient = supabase.createClient(
     return;
   }
 
-  const { data, error } = await supabaseClient.auth.signUp({
+  const { error } = await supabaseClient.auth.signUp({
     email: email,
     password: password
   });
@@ -436,6 +436,10 @@ const supabaseClient = supabase.createClient(
     message.textContent = error.message;
     return;
   }
+
+  message.textContent =
+    "Account created! Check your email to confirm your account.";
+}
 
   if (data.user) {
     const { error: profileError } =
