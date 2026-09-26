@@ -402,6 +402,10 @@ async function completeStreak(){
 function cashout(){
 
   const status = document.getElementById("payoutStatus");
+  const savedStatus = localStorage.getItem("mc_payout_status");
+if (savedStatus) {
+  status.textContent = savedStatus;
+}
 
   if(points < 1000){
 
@@ -417,6 +421,10 @@ function cashout(){
     "Demo payout request created for $" +
     amount +
     ". Real payouts are not connected yet.";
+  localStorage.setItem(
+  "mc_payout_status",
+  status.textContent
+);
 }
 
 updateScreen();
