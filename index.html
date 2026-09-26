@@ -404,8 +404,12 @@ function cashout(){
     return;
   }
 
+  const amount = (points / 1000).toFixed(2);
+
   alert(
-    "Demo payout request created. Real payouts are not connected yet."
+    "Demo payout request created for $" +
+    amount +
+    ". Real payouts are not connected yet."
   );
 }
 
