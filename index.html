@@ -238,7 +238,7 @@ let completed = JSON.parse(
 if(savedDate !== today){
 
   completed = [];
-
+localStorage.removeItem("mc_payout_status");
   localStorage.setItem(
     "mc_completed",
     JSON.stringify(completed)
