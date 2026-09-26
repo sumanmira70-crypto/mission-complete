@@ -387,17 +387,23 @@ function completeStreak(){
     return;
   }
 
-  completed.push("streak");
+ supabaseClient
+  .rpc("claim_streak")
+  .then(({ data, error }) => {
 
-  points += 100;
+    if (error) {
+      alert(error.message);
+      return;
+    }
 
-  save();
+    completed.push("streak");
+    points = data;
 
-  updateScreen();
+    save();
+    updateScreen();
 
-  alert(
-    "Daily streak bonus! +100 points"
-  );
+    alert("Daily streak bonus! +100 points");
+  });
 }
 
 function cashout(){
