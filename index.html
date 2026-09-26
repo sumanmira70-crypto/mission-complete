@@ -462,7 +462,12 @@ async function login() {
   const password = document.getElementById("password").value;
   const message = document.getElementById("authMessage");
 
-  const { error } =
+  if (!email || !password) {
+    message.textContent = "Enter your email and password.";
+    return;
+  }
+
+  const { data, error } =
     await supabaseClient.auth.signInWithPassword({
       email: email,
       password: password
@@ -471,6 +476,25 @@ async function login() {
   if (error) {
     message.textContent = error.message;
     return;
+  }
+
+  const user = data.user;
+
+  const { data: profile } =
+    await supabaseClient
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+  if (!profile) {
+    await supabaseClient
+      .from("profiles")
+      .insert({
+        id: user.id,
+        username: email.split("@")[0],
+        points: 0
+      });
   }
 
   message.textContent = "Logged in successfully!";
