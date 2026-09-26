@@ -605,6 +605,23 @@ async function login() {
     box.style.display = "none";
   }
 }
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+
+  const icon = document.getElementById("accountIcon");
+  const box = document.getElementById("authBox");
+
+  if (session) {
+    icon.style.display = "flex";
+  } else {
+    icon.style.display = "none";
+    box.style.display = "none";
+  }
+
+  if (event === "PASSWORD_RECOVERY") {
+    document.getElementById("newPasswordBox").style.display = "block";
+  }
+
+});
 </script>
   
 
