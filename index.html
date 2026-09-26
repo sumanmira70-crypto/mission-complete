@@ -99,6 +99,16 @@ button:disabled{
   <button onclick="signUp()">Create Account</button>
   <button onclick="login()">Log In</button>
     <button onclick="resetPassword()">Forgot Password</button>
+    <div id="newPasswordBox" style="display:none;">
+  <input
+    id="newPassword"
+    type="password"
+    placeholder="Enter new password"
+    style="width:100%;padding:12px;box-sizing:border-box;margin-top:10px;border-radius:8px;border:0;"
+  >
+
+  <button onclick="updatePassword()">Set New Password</button>
+</div>
 
   <p id="authMessage"></p>
 </div>
@@ -478,6 +488,27 @@ async function login() {
   }
 
   message.textContent = "Password reset email sent. Check your inbox.";
+}
+  async function updatePassword() {
+  const newPassword = document.getElementById("newPassword").value;
+  const message = document.getElementById("authMessage");
+
+  if (!newPassword) {
+    message.textContent = "Enter a new password.";
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = "Password updated successfully!";
+  document.getElementById("newPasswordBox").style.display = "none";
 }
 </script>
   
