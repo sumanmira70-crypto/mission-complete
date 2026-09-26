@@ -531,7 +531,7 @@ async function login() {
   message.textContent = "Password updated successfully!";
   document.getElementById("newPasswordBox").style.display = "none";
 }
-  async function loadProfile() {
+ async function loadProfile() {
   const { data: { user } } =
     await supabaseClient.auth.getUser();
 
@@ -539,21 +539,41 @@ async function login() {
     return;
   }
 
-  const { data, error } =
+  const { data: profile, error: profileError } =
     await supabaseClient
       .from("profiles")
       .select("points")
       .eq("id", user.id)
       .single();
 
-  if (error) {
-    console.log("Profile load error:", error.message);
+  if (profileError) {
+    console.log("Profile load error:", profileError.message);
     return;
   }
 
-  points = data.points || 0;
+  const { data: claims, error: claimsError } =
+    await supabaseClient
+      .from("mission_claims")
+      .select("mission_id")
+      .eq("user_id", user.id)
+      .eq("claimed_on", today);
+
+  if (claimsError) {
+    console.log("Mission claims load error:", claimsError.message);
+    return;
+  }
+
+  points = profile.points || 0;
+
+  completed = claims.map(function(claim) {
+    return claim.mission_id;
+  });
 
   localStorage.setItem("mc_points", points);
+  localStorage.setItem(
+    "mc_completed",
+    JSON.stringify(completed)
+  );
 
   updateScreen();
 }
