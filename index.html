@@ -221,12 +221,9 @@ if(savedDate !== today){
   );
 }
 
-function save(){
-
-  localStorage.setItem(
-    "mc_points",
-    points
-  );
+async function save() {
+  // Keep local save
+  localStorage.setItem("mc_points", points);
 
   localStorage.setItem(
     "mc_completed",
@@ -237,6 +234,22 @@ function save(){
     "mc_date",
     today
   );
+
+  // Save points to Supabase if logged in
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (user) {
+    const { error } =
+      await supabaseClient
+        .from("profiles")
+        .update({ points: points })
+        .eq("id", user.id);
+
+    if (error) {
+      console.log("Supabase points save error:", error.message);
+    }
+  }
 }
 
 function updateScreen(){
