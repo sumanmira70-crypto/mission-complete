@@ -98,6 +98,7 @@ button:disabled{
 
   <button onclick="signUp()">Create Account</button>
   <button onclick="login()">Log In</button>
+    <button onclick="resetPassword()">Forgot Password</button>
 
   <p id="authMessage"></p>
 </div>
@@ -454,6 +455,29 @@ async function login() {
   setTimeout(function() {
     location.reload();
   }, 1000);
+}
+  async function resetPassword() {
+  const email = document.getElementById("email").value;
+  const message = document.getElementById("authMessage");
+
+  if (!email) {
+    message.textContent = "Enter your email first.";
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(
+    email,
+    {
+      redirectTo: window.location.origin
+    }
+  );
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = "Password reset email sent. Check your inbox.";
 }
 </script>
   
