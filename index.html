@@ -213,6 +213,11 @@ Unlock Streak +100
 Request Payout
 </button>
   <p id="payoutStatus"></p>
+  <h3>Payout History</h3>
+
+<div id="payoutHistory">
+  <p>No payout requests yet.</p>
+</div>
 </div>
 
 <div class="small">
@@ -296,6 +301,44 @@ function updateScreen(){
     }
 
   });
+}
+  async function loadPayoutHistory() {
+
+  const history = document.getElementById("payoutHistory");
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (!user) {
+    history.innerHTML = "<p>Log in to see payout history.</p>";
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient
+      .from("payout_requests")
+      .select("amount, status, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("Payout history error:", error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    history.innerHTML = "<p>No payout requests yet.</p>";
+    return;
+  }
+
+  history.innerHTML = data.map(function(request) {
+    return `
+      <p>
+        $${Number(request.amount).toFixed(2)}
+        — ${request.status}
+      </p>
+    `;
+  }).join("");
 }
 
 async function completeMission(id, reward) {
@@ -630,6 +673,7 @@ async function login() {
   updateScreen();
 }
   loadProfile();
+  loadPayoutHistory();
   function toggleAccount() {
   const box = document.getElementById("authBox");
   const info = document.getElementById("accountInfo");
