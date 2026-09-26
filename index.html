@@ -286,25 +286,24 @@ function updateScreen(){
   });
 }
 
-function completeMission(id,reward){
+async function completeMission(id, reward) {
+  if (completed.includes(id)) return;
 
-  if(completed.includes(id)){
+  const { data, error } = await supabaseClient
+    .rpc("claim_mission", {
+      p_mission_id: id
+    });
+
+  if (error) {
+    alert(error.message);
     return;
   }
 
   completed.push(id);
-
-  points += reward;
+  points = data;
 
   save();
-
   updateScreen();
-
-  alert(
-    "Mission complete! +" +
-    reward +
-    " points"
-  );
 }
 
 function watchAd(){
