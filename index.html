@@ -523,6 +523,33 @@ async function login() {
   message.textContent = "Password updated successfully!";
   document.getElementById("newPasswordBox").style.display = "none";
 }
+  async function loadProfile() {
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("points")
+      .eq("id", user.id)
+      .single();
+
+  if (error) {
+    console.log("Profile load error:", error.message);
+    return;
+  }
+
+  points = data.points || 0;
+
+  localStorage.setItem("mc_points", points);
+
+  updateScreen();
+}
+  loadProfile();
 </script>
   
 
