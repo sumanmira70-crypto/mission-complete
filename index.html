@@ -450,25 +450,6 @@ const supabaseClient = supabase.createClient(
     "Account created! Check your email to confirm your account.";
 }
 
-  if (data.user) {
-    const { error: profileError } =
-      await supabaseClient
-        .from("profiles")
-        .insert({
-          id: data.user.id,
-          username: email.split("@")[0],
-          points: 0
-        });
-
-    if (profileError) {
-      message.textContent = profileError.message;
-      return;
-    }
-  }
-
-  message.textContent =
-    "Account created! Check your email to confirm your account.";
-}
 
 async function login() {
   const email = document.getElementById("email").value;
