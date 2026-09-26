@@ -306,7 +306,7 @@ async function completeMission(id, reward) {
   updateScreen();
 }
 
-function watchAd(){
+async function watchAd(){
 
   if(completed.includes("ad")){
     return;
@@ -339,17 +339,24 @@ function watchAd(){
 
       clearInterval(timer);
 
-      completed.push("ad");
+const { data, error } = await supabaseClient
+  .rpc("claim_mission", {
+    p_mission_id: "ad"
+  });
 
-      points += 50;
+if (error) {
+  alert(error.message);
+  button.disabled = false;
+  return;
+}
 
-      save();
+completed.push("ad");
+points = data;
 
-      updateScreen();
+save();
+updateScreen();
 
-      alert(
-        "Ad completed! +50 points"
-      );
+alert("Ad completed! +50 points");
     }
 
   },1000);
