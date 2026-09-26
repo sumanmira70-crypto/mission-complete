@@ -306,14 +306,13 @@ async function completeMission(id, reward) {
   updateScreen();
 }
 
-async function watchAd(){
+function watchAd(){
 
   if(completed.includes("ad")){
     return;
   }
 
-  let button =
-    document.getElementById("ad");
+  let button = document.getElementById("ad");
 
   button.disabled = true;
 
@@ -324,7 +323,7 @@ async function watchAd(){
     seconds +
     "s";
 
-let timer = setInterval(async function(){
+  let timer = setInterval(function(){
 
     seconds--;
 
@@ -339,28 +338,31 @@ let timer = setInterval(async function(){
 
       clearInterval(timer);
 
-supabaseClient
-  .rpc("claim_mission", {
-    p_mission_id: "ad"
-  })
-  .then(({ data, error }) => {
+      supabaseClient
+        .rpc("claim_mission", {
+          p_mission_id: "ad"
+        })
+        .then(({ data, error }) => {
 
-    if (error) {
-      alert(error.message);
-      button.disabled = false;
-      return;
+          if(error){
+            alert(error.message);
+            button.disabled = false;
+            return;
+          }
+
+          completed.push("ad");
+          points = data;
+
+          save();
+          updateScreen();
+
+          alert("Ad completed! +50 points");
+
+        });
+
     }
 
-    completed.push("ad");
-    points = data;
-
-    save();
-    updateScreen();
-
-    alert("Ad completed! +50 points");
-  });
-
-  },1000);
+  }, 1000);
 }
 
 function completeStreak(){
