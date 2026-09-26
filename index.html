@@ -207,6 +207,7 @@ Unlock Streak +100
 <button onclick="cashout()">
 Request Payout
 </button>
+  <p id="payoutStatus"></p>
 </div>
 
 <div class="small">
@@ -395,22 +396,22 @@ async function completeStreak(){
 }
 function cashout(){
 
+  const status = document.getElementById("payoutStatus");
+
   if(points < 1000){
 
-    alert(
-      "You need at least 1,000 points to request a payout."
-    );
+    status.textContent =
+      "You need at least 1,000 points to request a payout.";
 
     return;
   }
 
   const amount = (points / 1000).toFixed(2);
 
-  alert(
+  status.textContent =
     "Demo payout request created for $" +
     amount +
-    ". Real payouts are not connected yet."
-  );
+    ". Real payouts are not connected yet.";
 }
 
 updateScreen();
