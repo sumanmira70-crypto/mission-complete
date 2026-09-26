@@ -339,25 +339,26 @@ let timer = setInterval(async function(){
 
       clearInterval(timer);
 
-const { data, error } = await supabaseClient
+supabaseClient
   .rpc("claim_mission", {
     p_mission_id: "ad"
-  });
+  })
+  .then(({ data, error }) => {
 
-if (error) {
-  alert(error.message);
-  button.disabled = false;
-  return;
-}
-
-completed.push("ad");
-points = data;
-
-save();
-updateScreen();
-
-alert("Ad completed! +50 points");
+    if (error) {
+      alert(error.message);
+      button.disabled = false;
+      return;
     }
+
+    completed.push("ad");
+    points = data;
+
+    save();
+    updateScreen();
+
+    alert("Ad completed! +50 points");
+  });
 
   },1000);
 }
