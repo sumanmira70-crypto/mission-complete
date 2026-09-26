@@ -101,7 +101,7 @@ button:disabled{
   👤
 </div>
   <div class="container">
-  <div id="authBox" class="card">
+ <div id="authBox" class="card" style="display:none;">
   <h2>👤 Player Account</h2>
 
   <input id="email"
@@ -596,6 +596,15 @@ async function login() {
   updateScreen();
 }
   loadProfile();
+  function toggleAccount() {
+  const box = document.getElementById("authBox");
+
+  if (box.style.display === "none") {
+    box.style.display = "block";
+  } else {
+    box.style.display = "none";
+  }
+}
 </script>
   
 
