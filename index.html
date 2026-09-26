@@ -365,47 +365,28 @@ function watchAd(){
   }, 1000);
 }
 
-function completeStreak(){
+async function completeStreak(){
 
   if(completed.includes("streak")){
     return;
   }
 
-  let missionCount =
-    completed.filter(function(id){
+  const { data, error } =
+    await supabaseClient.rpc("claim_streak");
 
-      return id !== "streak";
-
-    }).length;
-
-  if(missionCount < 2){
-
-    alert(
-      "Complete 2 daily missions first!"
-    );
-
+  if(error){
+    alert(error.message);
     return;
   }
 
- supabaseClient
-  .rpc("claim_streak")
-  .then(({ data, error }) => {
+  completed.push("streak");
+  points = data;
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+  save();
+  updateScreen();
 
-    completed.push("streak");
-    points = data;
-
-    save();
-    updateScreen();
-
-    alert("Daily streak bonus! +100 points");
-  });
+  alert("Daily streak bonus! +100 points");
 }
-
 function cashout(){
 
   if(points < 1000){
