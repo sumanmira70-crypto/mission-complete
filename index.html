@@ -477,15 +477,20 @@ async function cashout(){
         status: "pending"
       });
 
-  if(error){
+ if(error){
 
+  if(error.code === "23505"){
+    status.textContent =
+      "You already have a pending payout request.";
+  }else{
     status.textContent =
       "Could not create payout request.";
-
-    console.log("Payout error:", error.message);
-
-    return;
   }
+
+  console.log("Payout error:", error.message);
+
+  return;
+}
 
   status.textContent =
     "Payout request created for $" +
